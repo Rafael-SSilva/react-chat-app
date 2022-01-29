@@ -3,19 +3,20 @@ import Button from "../../components/Button/Button";
 import Input from "../../components/Input/Input";
 import Container from "./styles";
 
-function Login() {
+function SignUp() {
   return (
     <Container>
-      <div className="login">
+      <div className="signup">
         <Input placeholder="E-mail" />
         <Input placeholder="Password" />
-        <Button text="Sign In" clickFc={() => alert("Clicked")} />
+        <Input placeholder="Repeat Password" />
+        <Button text="Sign Up" clickFc={() => alert("Signed Up")} />
         <p>
-          Do not have an account? <span>Sign Up</span>
+          Already have an account? <span>Sign In</span>
         </p>
       </div>
     </Container>
   );
 }
 
-export default Login;
+export default SignUp;

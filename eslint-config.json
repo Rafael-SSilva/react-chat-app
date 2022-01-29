@@ -8,6 +8,7 @@
         "prefer-arrow-callback": "off",
         "no-empty-function": "off",
         "@typescript-eslint/no-empty-function": "off",
+        "react/require-default-props": [0, { "forbidDefaultForRequired": false, "ignoreFunctionalComponents": true }],
         "import/extensions": [
             "error",
             "ignorePackages",
