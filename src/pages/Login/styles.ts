@@ -36,6 +36,10 @@ const Container = styled.div`
       & span {
         font-size: 0.7rem;
         color: var(--secondary);
+
+        &:hover {
+          cursor: pointer;
+        }
       }
     }
   }

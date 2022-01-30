@@ -7,6 +7,10 @@ const Container = styled.input`
   font-size: 0.8rem;
   border-radius: 8px;
   color: #b4b4b4;
+
+  &:focus {
+    outline: 3px solid var(--secondary);
+  }
 `;
 
 export default Container;
