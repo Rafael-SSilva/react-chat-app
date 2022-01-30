@@ -31,8 +31,7 @@ function Chat() {
                 <Avatar
                   alt="Rafael"
                   src=""
-                  sx={{ width: 38, height: 38, fontSize: "18px" }}
-                >
+                  sx={{ width: 38, height: 38, fontSize: "18px" }}>
                   LR
                 </Avatar>
                 <span>Lucas Ribeiro</span>

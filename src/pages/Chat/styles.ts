@@ -170,6 +170,7 @@ const Container = styled.div`
       &--content {
         border-bottom-left-radius: 8px;
         border-bottom-right-radius: 8px;
+        display: flex;
         flex-direction: column;
         justify-content: flex-end;
         width: 100%;
