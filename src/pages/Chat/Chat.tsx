@@ -5,8 +5,32 @@ import Container from "./styles";
 import Users from "./Users/Users";
 import SearchIcon from "./assets/search-solid.svg";
 
+const searchContacts = [
+  {
+    username: "Lucas",
+    fullName: "Lucas Ribeiro",
+    imageUrl: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
+  },
+  {
+    username: "Rafael",
+    fullName: "Rafael Santos",
+    imageUrl: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
+  },
+  {
+    username: "João",
+    fullName: "João da Silva",
+    imageUrl: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
+  },
+  {
+    username: "Pedro",
+    fullName: "Pedro dos Santos",
+    imageUrl: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
+  },
+];
+
 function Chat() {
   const [activeTab, setActiveTab] = useState("chat");
+  const [contacts, setContacts] = useState([]);
   const activeUsers = [
     {
       username: "Lucas",
@@ -38,20 +62,15 @@ function Chat() {
     { message: "Vamos fazer um app em React?", sending: true },
     { message: "Bora... App do que ?", sending: false },
     { message: "Um ToDo app básico.", sending: true },
-    { message: "Um ToDo app básico.", sending: true },
-    { message: "Um ToDo app básico.", sending: true },
-    { message: "Um ToDo app básico.", sending: true },
-    { message: "Um ToDo app básico.", sending: true },
-    { message: "Um ToDo app básico.", sending: true },
-    { message: "Um ToDo app básico.", sending: true },
-    { message: "Um ToDo app básico.", sending: true },
-    { message: "Um ToDo app básico.", sending: true },
-    { message: "Um ToDo app básico.", sending: true },
     { message: "Teste aee.", sending: true },
   ];
 
   useEffect(() => {
     setActiveTab("chat");
+    setContacts([]);
+    if (searchContacts.length < 1) {
+      console.log("");
+    }
   }, []);
 
   return (
@@ -81,23 +100,31 @@ function Chat() {
                   <span>Chats</span>
                 </div>
                 <div
-                  className={activeTab === "contacts" ? "active" : ""}
-                  onClick={() => setActiveTab("contacts")}
-                  onKeyPress={() => setActiveTab("contacts")}
+                  className={activeTab === "search" ? "active" : ""}
+                  onClick={() => setActiveTab("search")}
+                  onKeyPress={() => setActiveTab("search")}
                   role="button"
                   tabIndex={0}>
-                  <span>Contacts</span>
+                  <span>Search</span>
                 </div>
               </div>
             </div>
             <div className="chat__sidebar--body">
-              {activeTab === "contacts" && (
+              {activeTab === "search" && (
                 <div className="chat__sidebar--body-search">
                   <input type="text" placeholder="user@email.com" />
-                  <img srcSet={SearchIcon} alt="" />
+                  <div
+                    className="search-button"
+                    onKeyPress={() => {}}
+                    onClick={() => {}}
+                    area-hidden="false"
+                    role="button"
+                    tabIndex={0}>
+                    <img srcSet={SearchIcon} alt="asdsa" />
+                  </div>
                 </div>
               )}
-              <Users users={activeUsers} />
+              <Users users={activeTab === "chat" ? activeUsers : contacts} />
             </div>
           </div>
           <CurrentChat messages={userMessages} />

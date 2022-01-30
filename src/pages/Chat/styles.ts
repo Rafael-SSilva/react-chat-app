@@ -134,9 +134,16 @@ const Container = styled.div`
               }
             }
 
-            & img {
-              width: 24px;
-              margin-right: 4px;
+            & .search-button {
+              & img {
+                width: 24px;
+                padding-top: 4px;
+                margin-right: 4px;
+              }
+
+              &:hover {
+                cursor: pointer;
+              }
             }
           }
         }
