@@ -119,7 +119,7 @@ function Chat() {
                     area-hidden="false"
                     role="button"
                     tabIndex={0}>
-                    <img srcSet={SearchIcon} alt="asdsa" />
+                    <img srcSet={SearchIcon} alt="search" />
                   </div>
                 </div>
               )}
