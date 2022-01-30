@@ -29,6 +29,10 @@ const Container = styled.div`
         display: flex;
         align-items: center;
 
+        & div {
+          cursor: pointer;
+        }
+
         & span {
           margin-left: 10px;
           font-size: 22px;

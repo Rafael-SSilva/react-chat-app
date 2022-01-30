@@ -2,6 +2,7 @@ import { Avatar } from "@mui/material";
 import React from "react";
 import Messages from "./Messages/Messages";
 import Container from "./styles";
+import UserChating from "./UserChating/UserChating";
 import Users from "./Users/Users";
 
 function Chat() {
@@ -63,18 +64,13 @@ function Chat() {
           </div>
           <div className="chat__body">
             <div className="chat__body--header">
-              <div className="avatar">
-                <Avatar alt="" sx={{ width: 38, height: 38, fontSize: "18px" }}>
-                  LR
-                </Avatar>
-                <span>Lucas Ribeiro</span>
-              </div>
+              <UserChating />
             </div>
             <div className="chat__body--content">
               <Messages messages={userMessages} />
             </div>
             <div className="chat__body--textbox">
-              <textarea className="" />
+              <textarea />
             </div>
           </div>
         </div>
