@@ -35,11 +35,12 @@ const Container = styled.div`
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
     height: inherit;
+    display: flex;
     flex-direction: column;
-    justify-content: flex-end;
     max-height: calc(100% - 150px);
     max-width: 98%;
     margin-bottom: 20px;
+    margin-left: 4px;
     overflow-y: auto;
     padding: 10px 0 0px 10px;
   }

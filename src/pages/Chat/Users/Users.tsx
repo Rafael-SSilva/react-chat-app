@@ -16,8 +16,8 @@ function Users({ users }: UsersProps) {
   return (
     <Container>
       {users &&
-        users.map((user) => (
-          <div className="user active">
+        users.map((user, index) => (
+          <div className={index === 0 ? "user active" : "user"}>
             <Avatar
               alt={user.username}
               src={user?.imageUrl || ""}

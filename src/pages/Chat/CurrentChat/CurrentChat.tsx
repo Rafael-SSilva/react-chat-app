@@ -1,29 +1,25 @@
-import React from "react";
-import Messages from "../Messages/Messages";
+import React, { createRef, useEffect } from "react";
+import Message from "../Message/Message";
 import UserChating from "../UserChating/UserChating";
 import Container from "./styles";
 
-function CurrentChat() {
-  const userMessages = [
-    { message: "Iae mano, beleza?", sending: true },
-    { message: "Beleza e vc?", sending: false },
-    { message: "Tranquilo... Fazendo?", sending: true },
-    { message: "Jogando um CsGo aqui, qual a boa?", sending: false },
-    { message: "Jogando um CsGo aqui, qual a boa?", sending: false },
-    { message: "Jogando um CsGo aqui, qual a boa?", sending: false },
-    { message: "Jogando um CsGo aqui, qual a boa?", sending: false },
-    { message: "Jogando um CsGo aqui, qual a boa?", sending: false },
-    { message: "Jogando um CsGo aqui, qual a boa?", sending: false },
-    { message: "Jogando um CsGo aqui, qual a boa?", sending: false },
-    { message: "Jogando um CsGo aqui, qual a boa?", sending: false },
-    { message: "Jogando um CsGo aqui, qual a boa?", sending: false },
-    { message: "Jogando um CsGo aqui, qual a boa?", sending: false },
-    { message: "Jogando um CsGo aqui, qual a boa?", sending: true },
-    { message: "Jogando um CsGo aqui, qual a boa?", sending: false },
-    { message: "Jogando um CsGo aqui, qual a boa?", sending: true },
-    { message: "Jogando um CsGo aqui, qual a boa?", sending: false },
-    { message: "Jogando um CsGo aqui, qual a boa?", sending: true },
-  ];
+type MessageProp = {
+  message: string;
+  sending: boolean;
+};
+
+type MessagesProps = {
+  messages: MessageProp[];
+};
+
+function CurrentChat({ messages }: MessagesProps) {
+  const lastMessageRef = createRef<HTMLDivElement>();
+
+  useEffect(() => {
+    if (lastMessageRef.current) {
+      lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  });
 
   return (
     <Container className="body">
@@ -31,7 +27,14 @@ function CurrentChat() {
         <UserChating />
       </div>
       <div className="content">
-        <Messages messages={userMessages} />
+        {messages &&
+          messages.map((msg: MessageProp, index) => (
+            <Message
+              ref={index === messages.length - 1 ? lastMessageRef : null}
+              sending={msg.sending}
+              message={msg.message}
+            />
+          ))}
       </div>
       <div className="textbox">
         <textarea />

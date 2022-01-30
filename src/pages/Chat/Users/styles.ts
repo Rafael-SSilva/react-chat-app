@@ -6,7 +6,6 @@ const Container = styled.div`
     margin-top: 8px;
     display: flex;
     align-items: center;
-    margin-bottom: 16px;
     color: #ffffff;
     transition: 0.2s ease-in-out;
 
@@ -16,19 +15,9 @@ const Container = styled.div`
     }
 
     &.active {
-      padding-left: 7px;
-      margin-top: 6px;
-
-      &::before {
-        content: "";
-        background-color: var(--primary);
-        border-radius: 8px;
-        width: 4px;
-        height: 42px;
-        position: relative;
-        left: -6px;
-        padding: 0;
-      }
+      background-color: #0a2940;
+      -webkit-box-shadow: 0px 3px 5px 1px rgba(59, 98, 128, 0.31);
+      box-shadow: 0px 1px 2px 1px rgba(59, 98, 128, 0.31);
     }
 
     &:hover {

@@ -1,17 +1,18 @@
-import React from "react";
+import React, { DetailedHTMLProps, HTMLAttributes } from "react";
 import Container from "./styles";
 
-type MessageProps = {
+interface MessageProps
+  extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
   message: string;
   sending: boolean;
-};
+}
 
-function Message({ message, sending = true }: MessageProps) {
-  return (
-    <Container sending={sending}>
+const Message = React.forwardRef<HTMLDivElement, MessageProps>(
+  ({ message, sending }, ref) => (
+    <Container sending={sending} ref={ref}>
       <p>{message}</p>
     </Container>
-  );
-}
+  )
+);
 
 export default Message;
