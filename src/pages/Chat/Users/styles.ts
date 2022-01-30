@@ -8,6 +8,7 @@ const Container = styled.div`
     align-items: center;
     margin-bottom: 16px;
     color: #ffffff;
+    transition: 0.2s ease-in-out;
 
     & span {
       margin-left: 10px;
@@ -28,6 +29,13 @@ const Container = styled.div`
         left: -6px;
         padding: 0;
       }
+    }
+
+    &:hover {
+      background-color: #0a2940;
+      cursor: pointer;
+      -webkit-box-shadow: 0px 3px 5px 1px rgba(59, 98, 128, 0.71);
+      box-shadow: 0px 3px 5px 1px rgba(59, 98, 128, 0.71);
     }
   }
 `;

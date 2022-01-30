@@ -103,36 +103,6 @@ const Container = styled.div`
         & .chat__sidebar--body {
           height: calc(100% - 50px);
           overflow-y: auto;
-
-          & .chat__sidebar--body-user {
-            padding: 2px 11px;
-            margin-top: 8px;
-            display: flex;
-            align-items: center;
-            margin-bottom: 16px;
-            color: #ffffff;
-
-            & span {
-              margin-left: 10px;
-              font-size: 16px;
-            }
-          }
-
-          & .chat__sidebar--body-user.active {
-            padding-left: 7px;
-            margin-top: 6px;
-
-            &::before {
-              content: "";
-              background-color: var(--primary);
-              border-radius: 8px;
-              width: 4px;
-              height: 42px;
-              position: relative;
-              left: -6px;
-              padding: 0;
-            }
-          }
         }
       }
     }
