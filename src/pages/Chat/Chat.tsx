@@ -61,8 +61,7 @@ function Chat() {
     { message: "Jogando um CsGo aqui, qual a boa?", sending: false },
     { message: "Vamos fazer um app em React?", sending: true },
     { message: "Bora... App do que ?", sending: false },
-    { message: "Um ToDo app básico.", sending: true },
-    { message: "Teste aee.", sending: true },
+    { message: "Todo App... bem básico", sending: true },
   ];
 
   useEffect(() => {

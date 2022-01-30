@@ -36,13 +36,23 @@ const Container = styled.div`
     border-bottom-right-radius: 8px;
     height: inherit;
     display: flex;
-    flex-direction: column;
+    align-items: flex-end;
+    justify-content: flex-end;
+    flex: 1;
     max-height: calc(100% - 150px);
     max-width: 98%;
     margin-bottom: 20px;
     margin-left: 4px;
     overflow-y: auto;
     padding: 10px 0 0px 10px;
+
+    &-messages {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      max-height: calc(100% - 150px);
+      max-width: 98%;
+    }
   }
 
   & .textbox {

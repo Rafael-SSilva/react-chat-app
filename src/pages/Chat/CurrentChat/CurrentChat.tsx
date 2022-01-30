@@ -27,14 +27,16 @@ function CurrentChat({ messages }: MessagesProps) {
         <UserChating />
       </div>
       <div className="content">
-        {messages &&
-          messages.map((msg: MessageProp, index) => (
-            <Message
-              ref={index === messages.length - 1 ? lastMessageRef : null}
-              sending={msg.sending}
-              message={msg.message}
-            />
-          ))}
+        <div className="content-messages">
+          {messages &&
+            messages.map((msg: MessageProp, index) => (
+              <Message
+                ref={index === messages.length - 1 ? lastMessageRef : null}
+                sending={msg.sending}
+                message={msg.message}
+              />
+            ))}
+        </div>
       </div>
       <div className="textbox">
         <textarea />
