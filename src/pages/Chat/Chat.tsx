@@ -2,6 +2,7 @@ import { Avatar } from "@mui/material";
 import React from "react";
 import Messages from "./Messages/Messages";
 import Container from "./styles";
+import Users from "./Users/Users";
 
 function Chat() {
   const userMessages = [
@@ -9,6 +10,29 @@ function Chat() {
     { message: "Beleza e vc?", sending: false },
     { message: "Tranquilo... Fazendo?", sending: true },
     { message: "Jogando um CsGo aqui, qual a boa?", sending: false },
+  ];
+
+  const activeUsers = [
+    {
+      username: "Rafael",
+      fullName: "Rafael Santos",
+      imageUrl: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
+    },
+    {
+      username: "Lucas",
+      fullName: "Lucas Ribeiro",
+      imageUrl: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
+    },
+    {
+      username: "João",
+      fullName: "João da Silva",
+      imageUrl: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
+    },
+    {
+      username: "Pedro",
+      fullName: "Pedro dos Santos",
+      imageUrl: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
+    },
   ];
 
   return (
@@ -34,15 +58,7 @@ function Chat() {
               </div>
             </div>
             <div className="chat__sidebar--body">
-              <div className="chat__sidebar--body-user active">
-                <Avatar
-                  alt="Rafael"
-                  src=""
-                  sx={{ width: 38, height: 38, fontSize: "18px" }}>
-                  LR
-                </Avatar>
-                <span>Lucas Ribeiro</span>
-              </div>
+              <Users users={activeUsers} />
             </div>
           </div>
           <div className="chat__body">
