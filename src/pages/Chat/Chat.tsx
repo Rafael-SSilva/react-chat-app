@@ -1,18 +1,10 @@
 import { Avatar } from "@mui/material";
 import React from "react";
-import Messages from "./Messages/Messages";
+import CurrentChat from "./CurrentChat/CurrentChat";
 import Container from "./styles";
-import UserChating from "./UserChating/UserChating";
 import Users from "./Users/Users";
 
 function Chat() {
-  const userMessages = [
-    { message: "Iae mano, beleza?", sending: true },
-    { message: "Beleza e vc?", sending: false },
-    { message: "Tranquilo... Fazendo?", sending: true },
-    { message: "Jogando um CsGo aqui, qual a boa?", sending: false },
-  ];
-
   const activeUsers = [
     {
       username: "Rafael",
@@ -62,17 +54,7 @@ function Chat() {
               <Users users={activeUsers} />
             </div>
           </div>
-          <div className="chat__body">
-            <div className="chat__body--header">
-              <UserChating />
-            </div>
-            <div className="chat__body--content">
-              <Messages messages={userMessages} />
-            </div>
-            <div className="chat__body--textbox">
-              <textarea />
-            </div>
-          </div>
+          <CurrentChat />
         </div>
       </div>
     </Container>
