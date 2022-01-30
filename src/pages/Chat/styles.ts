@@ -180,11 +180,6 @@ const Container = styled.div`
         overflow-y: auto;
         margin: 0 auto;
         padding: 10px 0 10px 10px;
-
-        & .messages {
-          display: flex;
-          flex-direction: column;
-        }
       }
 
       &--textbox {

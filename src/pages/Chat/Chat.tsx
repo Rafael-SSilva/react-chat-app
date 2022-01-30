@@ -1,9 +1,16 @@
 import { Avatar } from "@mui/material";
 import React from "react";
-import Message from "./Message/Message";
+import Messages from "./Messages/Messages";
 import Container from "./styles";
 
 function Chat() {
+  const userMessages = [
+    { message: "Iae mano, beleza?", sending: true },
+    { message: "Beleza e vc?", sending: false },
+    { message: "Tranquilo... Fazendo?", sending: true },
+    { message: "Jogando um CsGo aqui, qual a boa?", sending: false },
+  ];
+
   return (
     <Container>
       <div className="chat">
@@ -48,17 +55,7 @@ function Chat() {
               </div>
             </div>
             <div className="chat__body--content">
-              <div className="messages">
-                <Message sending={false} message="Iae mano Beleza?" />
-                <Message sending message="Beleza e vc mano ?" />
-                <Message sending={false} message="To de boa tbm..." />
-                <Message
-                  sending={false}
-                  message="Essa semana não vou validar a janela"
-                />
-                <Message sending={false} message="Quero nem saber..." />
-                <Message sending message="Ta certo mano kkk" />
-              </div>
+              <Messages messages={userMessages} />
             </div>
             <div className="chat__body--textbox">
               <textarea className="" />
