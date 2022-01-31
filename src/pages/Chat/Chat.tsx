@@ -1,9 +1,10 @@
+/* eslint-disable no-unused-vars */
 import { Avatar } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import CurrentChat from "./CurrentChat/CurrentChat";
 import Container from "./styles";
 import Users from "./Users/Users";
-import SearchIcon from "./assets/search-solid.svg";
+import SearchInput from "./CurrentChat/SearchInput/SearchInput";
 
 const searchContacts = [
   {
@@ -67,9 +68,6 @@ function Chat() {
   useEffect(() => {
     setActiveTab("chat");
     setContacts([]);
-    if (searchContacts.length < 1) {
-      console.log("");
-    }
   }, []);
 
   return (
@@ -110,18 +108,12 @@ function Chat() {
             </div>
             <div className="chat__sidebar--body">
               {activeTab === "search" && (
-                <div className="chat__sidebar--body-search">
-                  <input type="text" placeholder="user@email.com" />
-                  <div
-                    className="search-button"
-                    onKeyPress={() => {}}
-                    onClick={() => {}}
-                    area-hidden="false"
-                    role="button"
-                    tabIndex={0}>
-                    <img srcSet={SearchIcon} alt="search" />
-                  </div>
-                </div>
+                <SearchInput
+                  imgAlt="search button"
+                  keyPressFc={() => {}}
+                  onClickFc={() => {}}
+                  tabIndexNum={0}
+                />
               )}
               <Users users={activeTab === "chat" ? activeUsers : contacts} />
             </div>
