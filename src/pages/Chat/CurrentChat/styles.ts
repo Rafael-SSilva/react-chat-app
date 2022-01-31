@@ -57,10 +57,10 @@ const Container = styled.div`
 
   & .textbox {
     width: 100%;
-    height: 48px;
+    height: 40px;
     display: flex;
     justify-content: center;
-    margin-top: 12px;
+    margin-top: 30px;
 
     & textarea {
       background-color: rgba(62, 78, 90, 0.8);
@@ -70,7 +70,7 @@ const Container = styled.div`
       font-weight: 300;
       font-size: 16px;
       height: 100%;
-      line-height: 24px;
+      line-height: 18px;
       outline: none;
       padding: 10px 0 10px 10px;
       width: 95%;

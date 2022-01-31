@@ -22,15 +22,26 @@ function CurrentChat({ messages }: MessagesProps) {
       setAllMessages(messages);
     }
     if (lastMessageRef.current) {
-      lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
+      lastMessageRef.current.scrollIntoView({
+        behavior: "smooth",
+      });
     }
   }, [allMessages]);
 
   function handleSendMessage(event: KeyboardEvent): void {
-    if (event?.key === "Enter") {
+    if (event?.key === "Enter" && !event?.shiftKey && typeText.trim()) {
+      const messageNew: MessageProp = {
+        message: typeText,
+        sending: true,
+      };
       setTypedText("");
-      const messageNew: MessageProp = { message: typeText, sending: true };
       setAllMessages((prev) => [...prev, messageNew]);
+    }
+  }
+
+  function HandleKeyPress(event: KeyboardEvent): void {
+    if (event?.key === "Enter" && !event?.shiftKey) {
+      event.preventDefault();
     }
   }
 
@@ -42,13 +53,10 @@ function CurrentChat({ messages }: MessagesProps) {
       <div className="content">
         <div className="content-messages">
           {allMessages &&
-            allMessages.map((msg: MessageProp, index: number) => (
-              <Message
-                ref={index === allMessages.length - 1 ? lastMessageRef : null}
-                sending={msg.sending}
-                message={msg.message}
-              />
+            allMessages.map((msg: MessageProp) => (
+              <Message sending={msg.sending} message={msg.message} />
             ))}
+          <div ref={lastMessageRef} />
         </div>
       </div>
       <div className="textbox">
@@ -56,6 +64,7 @@ function CurrentChat({ messages }: MessagesProps) {
           onKeyDown={handleSendMessage}
           value={typeText}
           onChange={(e) => setTypedText(e.target.value)}
+          onKeyPress={HandleKeyPress}
         />
       </div>
     </Container>
