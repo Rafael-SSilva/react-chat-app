@@ -11,7 +11,7 @@ type MessageProp = {
 type MessagesProps = {
   messages: MessageProp[];
 };
-
+// Receber user ao inves de mensagenss
 function CurrentChat({ messages }: MessagesProps) {
   const lastMessageRef = createRef<HTMLDivElement>();
   const [typeText, setTypedText] = useState("");

@@ -1,10 +1,17 @@
 /* eslint-disable no-unused-vars */
 import { Avatar } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, {
+  DetailedHTMLProps,
+  FormEvent,
+  HtmlHTMLAttributes,
+  TdHTMLAttributes,
+  useEffect,
+  useState,
+} from "react";
 import CurrentChat from "./CurrentChat/CurrentChat";
 import Container from "./styles";
 import Users from "./Users/Users";
-import SearchInput from "./CurrentChat/SearchInput/SearchInput";
+import SearchInput from "./SearchInput/SearchInput";
 
 const searchContacts = [
   {
@@ -15,6 +22,21 @@ const searchContacts = [
   {
     username: "Rafael",
     fullName: "Rafael Santos",
+    imageUrl: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
+  },
+  {
+    username: "Luciano",
+    fullName: "Luciano da Silva",
+    imageUrl: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
+  },
+  {
+    username: "Luan",
+    fullName: "Luan de Souza",
+    imageUrl: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
+  },
+  {
+    username: "Luiz",
+    fullName: "Luiz Gomes",
     imageUrl: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
   },
   {
@@ -29,9 +51,17 @@ const searchContacts = [
   },
 ];
 
+type UserProp = {
+  username: string;
+  fullName: string;
+  imageUrl?: string;
+};
+
 function Chat() {
   const [activeTab, setActiveTab] = useState("chat");
-  const [contacts, setContacts] = useState([]);
+  const [contacts, setContacts] = useState<UserProp[]>([]);
+  const [search, setSearch] = useState<string>("");
+
   const activeUsers = [
     {
       username: "Lucas",
@@ -70,6 +100,16 @@ function Chat() {
     setContacts([]);
   }, []);
 
+  const handleSearch = (): void => {
+    const filtered = searchContacts.filter((x) =>
+      x.fullName.toLowerCase().includes(search.toLowerCase())
+    );
+    console.log("contatos", filtered);
+    if (filtered.length) {
+      setContacts(filtered);
+    }
+  };
+
   return (
     <Container>
       <link
@@ -99,7 +139,7 @@ function Chat() {
                 <div
                   className={activeTab === "search" ? "active" : ""}
                   onClick={() => setActiveTab("search")}
-                  onKeyPress={() => setActiveTab("search")}
+                  onKeyPress={() => {}}
                   role="button"
                   tabIndex={0}>
                   <span>Search</span>
@@ -109,9 +149,11 @@ function Chat() {
             <div className="chat__sidebar--body">
               {activeTab === "search" && (
                 <SearchInput
+                  inputValue={search}
+                  inputChange={(e) => setSearch(e.target.value)}
                   imgAlt="search button"
                   keyPressFc={() => {}}
-                  onClickFc={() => {}}
+                  onClickFc={handleSearch}
                   tabIndexNum={0}
                 />
               )}
