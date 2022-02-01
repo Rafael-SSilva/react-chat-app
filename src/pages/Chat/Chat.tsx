@@ -101,11 +101,12 @@ function Chat() {
   }, []);
 
   const handleSearch = (): void => {
-    const filtered = searchContacts.filter((x) =>
-      x.fullName.toLowerCase().includes(search.toLowerCase())
-    );
-    console.log("contatos", filtered);
-    if (filtered.length) {
+    if (!search.trim()) {
+      setContacts([]);
+    } else {
+      const filtered = searchContacts.filter((x) =>
+        x.fullName.toLowerCase().includes(search.toLowerCase())
+      );
       setContacts(filtered);
     }
   };
