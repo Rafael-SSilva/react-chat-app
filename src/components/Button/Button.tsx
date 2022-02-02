@@ -1,13 +1,24 @@
-import React, { MouseEventHandler } from "react";
+import React, {
+  ButtonHTMLAttributes,
+  DetailsHTMLAttributes,
+  MouseEventHandler,
+} from "react";
 import Container from "./styles";
 
-type ButtonProps = {
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   text?: string;
-  clickFc?: MouseEventHandler;
-};
+}
 
-function Button({ text = "", clickFc }: ButtonProps) {
-  return <Container onClick={clickFc}>{text}</Container>;
+function Button({
+  children,
+  onClick,
+  onKeyPress,
+}: ButtonHTMLAttributes<HTMLButtonElement>) {
+  return (
+    <Container onClick={onClick} onKeyPress={onKeyPress}>
+      {children}
+    </Container>
+  );
 }
 
 export default Button;

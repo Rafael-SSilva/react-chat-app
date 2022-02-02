@@ -60,6 +60,7 @@
         "max-len":[
           "error",
           {"code": 85}
-        ]
+        ],
+        "no-unused-vars": "off"
     }
 }

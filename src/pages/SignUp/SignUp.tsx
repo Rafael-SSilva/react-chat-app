@@ -10,7 +10,7 @@ function SignUp() {
         <Input placeholder="E-mail" />
         <Input placeholder="Password" />
         <Input placeholder="Repeat Password" />
-        <Button text="Sign Up" clickFc={() => alert("Signed Up")} />
+        <Button onClick={() => alert("Signed Up")} />
         <p>
           Already have an account? <span>Sign In</span>
         </p>
