@@ -1,11 +1,13 @@
 import React, { createRef, KeyboardEvent, useEffect, useState } from "react";
 import Message from "../Message/Message";
+import TextBox from "../TextBox/TextBox";
 import UserChating from "../UserChating/UserChating";
 import Container from "./styles";
 
 type MessageProp = {
   message: string;
   sending: boolean;
+  id: string;
 };
 
 type MessagesProps = {
@@ -28,22 +30,23 @@ function CurrentChat({ messages }: MessagesProps) {
     }
   }, [allMessages]);
 
-  function handleSendMessage(event: KeyboardEvent): void {
+  const handleSendMessage = (event: KeyboardEvent): void => {
     if (event?.key === "Enter" && !event?.shiftKey && typeText.trim()) {
       const messageNew: MessageProp = {
         message: typeText,
         sending: true,
+        id: `${typeText.substring(0, 2)}x9-2x`,
       };
       setTypedText("");
       setAllMessages((prev) => [...prev, messageNew]);
     }
-  }
+  };
 
-  function HandleKeyPress(event: KeyboardEvent): void {
+  const HandleKeyPress = (event: KeyboardEvent): void => {
     if (event?.key === "Enter" && !event?.shiftKey) {
       event.preventDefault();
     }
-  }
+  };
 
   return (
     <Container className="body">
@@ -54,19 +57,21 @@ function CurrentChat({ messages }: MessagesProps) {
         <div className="content-messages">
           {allMessages &&
             allMessages.map((msg: MessageProp) => (
-              <Message sending={msg.sending} message={msg.message} />
+              <Message
+                sending={msg.sending}
+                message={msg.message}
+                key={msg.id}
+              />
             ))}
           <div ref={lastMessageRef} />
         </div>
       </div>
-      <div className="textbox">
-        <textarea
-          onKeyDown={handleSendMessage}
-          value={typeText}
-          onChange={(e) => setTypedText(e.target.value)}
-          onKeyPress={HandleKeyPress}
-        />
-      </div>
+      <TextBox
+        HandleKeyPress={HandleKeyPress}
+        handleSendMessage={handleSendMessage}
+        typeText={typeText}
+        changeText={(e) => setTypedText(e.target.value)}
+      />
     </Container>
   );
 }
