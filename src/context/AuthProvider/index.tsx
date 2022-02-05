@@ -11,14 +11,12 @@ export function AuthProvider({ children }: IAuthProvider) {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    setLoading(false);
     const unsub = onAuthStateChanged(auth, (authUser) => {
+      setLoading(false);
       if (authUser) {
         setUser(authUser);
-        setLoading(false);
       } else {
         setUser(null);
-        setLoading(false);
       }
     });
 

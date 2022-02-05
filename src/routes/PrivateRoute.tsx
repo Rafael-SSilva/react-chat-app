@@ -1,5 +1,6 @@
 import React from "react";
 import { Navigate, useLocation } from "react-router-dom";
+import Spinner from "../components/Spinner/Spinner";
 import useAuth from "../context/AuthProvider/useAuth";
 
 function PrivateRoute({ children }: { children: any }) {
@@ -7,7 +8,7 @@ function PrivateRoute({ children }: { children: any }) {
   const location = useLocation();
 
   if (userCtx.loading) {
-    return <h1>Loading...</h1>;
+    return <Spinner />;
   }
 
   if (!userCtx.email) {
