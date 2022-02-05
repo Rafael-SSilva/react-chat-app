@@ -8,6 +8,7 @@ import Users from "./Users/Users";
 import SearchInput from "./SearchInput/SearchInput";
 import useAuth from "../../context/AuthProvider/useAuth";
 import { auth } from "../../services/firebase";
+import Spinner from "../../components/Spinner/Spinner";
 
 const searchContacts = [
   {
@@ -106,15 +107,13 @@ function Chat() {
   };
 
   const handleLogout = async () => {
-    try {
-      await userAuth.logout();
-      navigate("/signin");
-    } catch (error) {
-      console.log("error", error);
-    }
+    await userAuth.logout();
+    navigate("/signin");
   };
 
-  return (
+  return userAuth.loading ? (
+    <Spinner />
+  ) : (
     <Container>
       <div className="chat">
         <div className="chat__header">

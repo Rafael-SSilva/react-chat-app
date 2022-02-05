@@ -54,7 +54,7 @@ function SignUp() {
             onChange={(e) => setPassword2(e.target.value)}
           />
           <Button onClick={handleSignUp} type="submit">
-            Sign Up
+            Register
           </Button>
           <p>
             Already have an account?{" "}
