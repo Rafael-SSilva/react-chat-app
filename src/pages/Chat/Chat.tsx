@@ -1,9 +1,13 @@
 import { Avatar } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { onAuthStateChanged } from "firebase/auth";
 import CurrentChat from "./CurrentChat/CurrentChat";
 import Container from "./styles";
 import Users from "./Users/Users";
 import SearchInput from "./SearchInput/SearchInput";
+import useAuth from "../../context/AuthProvider/useAuth";
+import { auth } from "../../services/firebase";
 
 const searchContacts = [
   {
@@ -82,11 +86,13 @@ function Chat() {
   const [activeTab, setActiveTab] = useState("chat");
   const [contacts, setContacts] = useState<UserProp[]>([]);
   const [search, setSearch] = useState<string>("");
+  const userAuth = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setActiveTab("chat");
     setContacts([]);
-  }, []);
+  }, [userAuth]);
 
   const handleSearch = (): void => {
     if (!search.trim()) {
@@ -99,6 +105,15 @@ function Chat() {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await userAuth.logout();
+      navigate("/signin");
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
   return (
     <Container>
       <div className="chat">
@@ -107,7 +122,9 @@ function Chat() {
             <Avatar>R</Avatar>
             <span>Rafael</span>
           </div>
-          <button type="button">Logout</button>
+          <button type="button" onClick={() => handleLogout()}>
+            Logout
+          </button>
         </div>
         <div className="divider">
           <div className="chat__sidebar">

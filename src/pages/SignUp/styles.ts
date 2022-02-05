@@ -11,19 +11,26 @@ const Container = styled.div`
     border: 1px solid #cccccc;
     width: 80%;
     max-width: 420px;
-    padding: 1.8rem 0 0.8rem;
+    padding: 1.8rem 0 1.2rem;
     border-radius: 8px;
     background-color: var(--background);
-
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 
-    & input {
-      margin-top: 0.4rem;
-      height: 42px;
-      width: 80%;
+    & form {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+
+      & input {
+        margin-top: 0.4rem;
+        height: 42px;
+        width: 80%;
+      }
     }
 
     & p {

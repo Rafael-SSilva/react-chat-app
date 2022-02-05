@@ -41,6 +41,7 @@
     "rules": {
         "react/require-default-props": [0, { "forbidDefaultForRequired": false, "ignoreFunctionalComponents": true }],
         "react/jsx-filename-extension": [0, { "extensions": [".js", ".jsx"] }],
+        "react/jsx-props-no-spreading": "off",
         "indent": [
             "error",
             2

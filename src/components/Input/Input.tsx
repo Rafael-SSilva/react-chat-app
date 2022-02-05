@@ -1,4 +1,4 @@
-import React, { ChangeEventHandler } from "react";
+import React, { ChangeEventHandler, InputHTMLAttributes } from "react";
 import Container from "./styles";
 
 interface InputProps {
@@ -9,17 +9,17 @@ interface InputProps {
 }
 
 function Input({
-  type = "text",
-  value = "",
-  placeholder = "",
-  onChangeFc,
-}: InputProps) {
+  type,
+  value,
+  placeholder,
+  onChange,
+}: InputHTMLAttributes<HTMLInputElement>) {
   return (
     <Container
-      type={!type ? "text" : type}
-      value={!value ? "" : value}
-      placeholder={!placeholder ? "" : placeholder}
-      onChange={!onChangeFc ? undefined : onChangeFc}
+      type={type}
+      value={value}
+      placeholder={placeholder}
+      onChange={onChange}
     />
   );
 }
