@@ -7,6 +7,7 @@ import Container from "./styles";
 
 function SignUp() {
   const userAuth = useAuth();
+  const [username, setUsername] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [password2, setPassword2] = useState<string>("");
@@ -21,7 +22,7 @@ function SignUp() {
   const handleSignUp = async (e: FormEvent) => {
     e.preventDefault();
 
-    await userAuth.signUpUser(email, password);
+    await userAuth.signUpUser(username, email, password);
     navigate("/signin");
   };
 
@@ -38,6 +39,11 @@ function SignUp() {
     <Container>
       <div className="signup">
         <form>
+          <Input
+            placeholder="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
           <Input
             placeholder="E-mail"
             value={email}

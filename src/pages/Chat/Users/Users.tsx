@@ -1,5 +1,6 @@
 import { Avatar } from "@mui/material";
-import React from "react";
+import { DocumentData } from "firebase/firestore";
+import React, { useState } from "react";
 import Container from "./styles";
 
 type UserProp = {
@@ -9,22 +10,38 @@ type UserProp = {
 };
 
 type UsersProps = {
-  users: UserProp[];
+  users: DocumentData[];
+  handleActiveChat: (active: DocumentData) => void;
 };
 
-function Users({ users }: UsersProps) {
+function Users({ users, handleActiveChat }: UsersProps) {
+  const [activeUser, setActiveUser] = useState<DocumentData>(
+    {} as DocumentData
+  );
+
+  const setActiveChat = (user: DocumentData) => {
+    handleActiveChat(user);
+    setActiveUser(user);
+  };
+
   return (
     <Container>
       {users &&
         users.map((user, index) => (
-          <div className={index === 0 ? "user active" : "user"}>
+          <div
+            className={user.uuid === activeUser.uuid ? "user active" : "user"}
+            key={user.uuid}
+            onClick={() => setActiveChat(user)}
+            onKeyPress={() => setActiveChat(user)}
+            role="button"
+            tabIndex={0}>
             <Avatar
               alt={user.username}
-              src={user?.imageUrl || ""}
+              src={user?.avatar || ""}
               sx={{ width: 38, height: 38, fontSize: "18px" }}>
               {user.username.substring(0, 1).toUpperCase()}
             </Avatar>
-            <span>{user.fullName}</span>
+            <span>{user.username}</span>
           </div>
         ))}
     </Container>

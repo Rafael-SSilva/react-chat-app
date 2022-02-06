@@ -1,7 +1,19 @@
-import { User, onAuthStateChanged } from "firebase/auth";
+import {
+  User,
+  onAuthStateChanged,
+  updateProfile,
+  UserCredential,
+} from "firebase/auth";
+import {
+  addDoc,
+  collection,
+  doc,
+  DocumentData,
+  setDoc,
+} from "firebase/firestore";
 import React, { createContext, useEffect, useMemo, useState } from "react";
 import { createUser, loginRequest, logoutRequest } from "../../services/auth";
-import { auth } from "../../services/firebase";
+import { auth, db } from "../../services/firebase";
 import { IContext, IAuthProvider } from "./types";
 
 export const AuthContext = createContext<IContext>({} as IContext);
@@ -25,14 +37,28 @@ export function AuthProvider({ children }: IAuthProvider) {
     };
   }, [user, auth]);
 
-  async function signUpUser(email: string, password: string) {
+  async function signUpUser(username: string, email: string, password: string) {
     const response = await createUser(email, password);
-    setUser(response);
+    await updateProfile(auth.currentUser as User, {
+      displayName: username,
+    });
+    if (response) {
+      await addDoc(collection(db, "users"), {
+        username,
+        avatar: "",
+        email: response.email,
+        online: false,
+        uuid: response.uid,
+      });
+      setUser(response);
+    }
   }
 
   async function authenticate(email: string, password: string) {
     const response = await loginRequest(email, password);
-    setUser(response);
+    if (response) {
+      setUser(response);
+    }
   }
 
   async function logout() {

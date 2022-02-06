@@ -2,49 +2,77 @@ import { Avatar } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
+import {
+  collection,
+  DocumentData,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 import CurrentChat from "./CurrentChat/CurrentChat";
 import Container from "./styles";
 import Users from "./Users/Users";
 import SearchInput from "./SearchInput/SearchInput";
 import useAuth from "../../context/AuthProvider/useAuth";
-import { auth } from "../../services/firebase";
+import { auth, db } from "../../services/firebase";
 import Spinner from "../../components/Spinner/Spinner";
 
 const searchContacts = [
   {
     username: "Lucas",
     fullName: "Lucas Ribeiro",
-    imageUrl: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
+    avatar: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
+    uuid: "asdsadas",
+    email: "adasdas",
+    online: true,
   },
   {
     username: "Rafael",
     fullName: "Rafael Santos",
-    imageUrl: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
+    avatar: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
+    uuid: "asdsadas",
+    email: "adasdas",
+    online: true,
   },
   {
     username: "Luciano",
     fullName: "Luciano da Silva",
-    imageUrl: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
+    avatar: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
+    uuid: "asdsadas",
+    email: "adasdas",
+    online: true,
   },
   {
     username: "Luan",
     fullName: "Luan de Souza",
-    imageUrl: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
+    avatar: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
+    uuid: "asdsadas",
+    email: "adasdas",
+    online: true,
   },
   {
     username: "Luiz",
     fullName: "Luiz Gomes",
-    imageUrl: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
+    avatar: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
+    uuid: "asdsadas",
+    email: "adasdas",
+    online: true,
   },
   {
     username: "João",
     fullName: "João da Silva",
-    imageUrl: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
+    avatar: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
+    uuid: "asdsadas",
+    email: "adasdas",
+    online: true,
   },
   {
     username: "Pedro",
     fullName: "Pedro dos Santos",
-    imageUrl: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
+    avatar: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
+    uuid: "asdsadas",
+    email: "adasdas",
+    online: true,
   },
 ];
 
@@ -74,7 +102,10 @@ const activeUsers = [
 type UserProp = {
   username: string;
   fullName: string;
-  imageUrl?: string;
+  avatar?: string;
+  uuid: string;
+  online: boolean;
+  email: string;
 };
 
 const userMessages = [
@@ -85,15 +116,29 @@ const userMessages = [
 
 function Chat() {
   const [activeTab, setActiveTab] = useState("chat");
-  const [contacts, setContacts] = useState<UserProp[]>([]);
+  const [contacts, setContacts] = useState<DocumentData[]>([]);
   const [search, setSearch] = useState<string>("");
+  const [chatUsers, setChatUsers] = useState<DocumentData[]>([]);
+  const [activeUser, setActiveUser] = useState<DocumentData>([]);
   const userAuth = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     setActiveTab("chat");
     setContacts([]);
-  }, [userAuth]);
+    userAuth.setLoading(true);
+
+    (async () => {
+      const q = query(collection(db, "users"));
+      const querySnapshot = await getDocs(q);
+      const userList: any = [];
+      querySnapshot.forEach((doc) => {
+        userList.push(doc.data());
+      });
+      setChatUsers(userList);
+      userAuth.setLoading(false);
+    })();
+  }, []);
 
   const handleSearch = (): void => {
     if (!search.trim()) {
@@ -111,6 +156,10 @@ function Chat() {
     navigate("/signin");
   };
 
+  const activeChatCB = (active: DocumentData) => {
+    setActiveUser(active);
+  };
+
   return userAuth.loading ? (
     <Spinner />
   ) : (
@@ -119,7 +168,7 @@ function Chat() {
         <div className="chat__header">
           <div className="avatar">
             <Avatar>R</Avatar>
-            <span>Rafael</span>
+            <span>{userAuth.displayName}</span>
           </div>
           <button type="button" onClick={() => handleLogout()}>
             Logout
@@ -158,7 +207,10 @@ function Chat() {
                   tabIndexNum={0}
                 />
               )}
-              <Users users={activeTab === "chat" ? activeUsers : contacts} />
+              <Users
+                handleActiveChat={activeChatCB}
+                users={activeTab === "chat" ? chatUsers : contacts}
+              />
             </div>
           </div>
           <CurrentChat messages={userMessages} />

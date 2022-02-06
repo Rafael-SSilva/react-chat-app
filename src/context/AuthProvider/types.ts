@@ -5,7 +5,7 @@ import { JsxElement } from "typescript";
 export interface IContext extends User {
   authenticate: (email: string, pass: string) => Promise<void>;
   logout: () => void;
-  signUpUser: (email: string, pass: string) => Promise<void>;
+  signUpUser: (username: string, email: string, pass: string) => Promise<void>;
   loading: boolean;
   setLoading: Dispatch<SetStateAction<boolean>>;
 }
