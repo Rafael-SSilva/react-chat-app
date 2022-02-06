@@ -8,6 +8,8 @@ export interface IContext extends User {
   signUpUser: (username: string, email: string, pass: string) => Promise<void>;
   loading: boolean;
   setLoading: Dispatch<SetStateAction<boolean>>;
+  resetPassword: (email: string) => Promise<void>;
+  confirmPassReset: (code: string, newPassword: string) => Promise<void>;
 }
 
 export interface IAuthProvider {

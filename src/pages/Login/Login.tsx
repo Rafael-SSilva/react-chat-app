@@ -64,6 +64,16 @@ function Login() {
             Sign Up
           </span>
         </p>
+        <p>
+          Forgot your password?{" "}
+          <span
+            onClick={() => navigate("/reset")}
+            role="button"
+            tabIndex={0}
+            onKeyPress={handlePressSignUp}>
+            Password Recevory
+          </span>
+        </p>
       </div>
     </Container>
   );

@@ -2,7 +2,8 @@ import {
   User,
   onAuthStateChanged,
   updateProfile,
-  UserCredential,
+  sendPasswordResetEmail,
+  confirmPasswordReset,
 } from "firebase/auth";
 import {
   addDoc,
@@ -67,8 +68,29 @@ export function AuthProvider({ children }: IAuthProvider) {
     });
   }
 
+  async function resetPassword(email: string) {
+    const actionCodeSettings = {
+      url: "http://localhost:3000/resetconfirmation",
+      handleCodeInApp: true,
+    };
+    return sendPasswordResetEmail(auth, email, actionCodeSettings);
+  }
+
+  async function confirmPassReset(code: string, newPassword: string) {
+    return confirmPasswordReset(auth, code, newPassword);
+  }
+
   const value = useMemo(
-    () => ({ ...user, authenticate, logout, signUpUser, loading, setLoading }),
+    () => ({
+      ...user,
+      authenticate,
+      logout,
+      signUpUser,
+      loading,
+      setLoading,
+      resetPassword,
+      confirmPassReset,
+    }),
     [user]
   );
 
