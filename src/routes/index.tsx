@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Routes as RDRouter } from "react-router-dom";
+import { Navigate, Route, Routes as RDRouter } from "react-router-dom";
 import useAuth from "../context/AuthProvider/useAuth";
 import Chat from "../pages/Chat/Chat";
 import ForgotPassword from "../pages/ForgotPassword/ForgotPassword";
@@ -25,6 +25,7 @@ function Routes() {
       <Route path="/signup" element={<SignUp />} />
       <Route path="/reset" element={<ForgotPassword />} />
       <Route path="/resetconfirmation" element={<PasswordReset />} />
+      <Route path="*" element={<Navigate to="/chat" replace />} />
     </RDRouter>
   );
 }
