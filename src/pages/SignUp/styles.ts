@@ -30,6 +30,7 @@ const Container = styled.div`
         margin-top: 0.4rem;
         height: 42px;
         width: 80%;
+        color: black;
       }
     }
 

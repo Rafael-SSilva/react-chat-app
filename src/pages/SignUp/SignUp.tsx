@@ -22,8 +22,15 @@ function SignUp() {
   const handleSignUp = async (e: FormEvent) => {
     e.preventDefault();
 
-    await userAuth.signUpUser(username, email, password);
-    navigate("/signin");
+    userAuth
+      .signUpUser(username, email, password)
+      .then(() => {
+        userAuth.logout();
+        navigate("/signin");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const handlePressSignIn = (e: KeyboardEvent<HTMLSpanElement>) => {
@@ -38,7 +45,7 @@ function SignUp() {
   return (
     <Container>
       <div className="signup">
-        <form>
+        <form onSubmit={handleSignUp}>
           <Input
             placeholder="Username"
             value={username}
@@ -50,18 +57,18 @@ function SignUp() {
             onChange={(e) => setEmail(e.target.value)}
           />
           <Input
+            type="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
           <Input
+            type="password"
             placeholder="Repeat Password"
             value={password2}
             onChange={(e) => setPassword2(e.target.value)}
           />
-          <Button onClick={handleSignUp} type="submit">
-            Register
-          </Button>
+          <Button type="submit">Register</Button>
           <p>
             Already have an account?{" "}
             <span

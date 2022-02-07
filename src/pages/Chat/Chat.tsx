@@ -4,9 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import {
   collection,
+  doc,
   DocumentData,
   getDocs,
   query,
+  setDoc,
   where,
 } from "firebase/firestore";
 import CurrentChat from "./CurrentChat/CurrentChat";
@@ -119,7 +121,8 @@ function Chat() {
   const [contacts, setContacts] = useState<DocumentData[]>([]);
   const [search, setSearch] = useState<string>("");
   const [chatUsers, setChatUsers] = useState<DocumentData[]>([]);
-  const [activeUser, setActiveUser] = useState<DocumentData>([]);
+  const [activeUser, setActiveUser] = useState<DocumentData | null>(null);
+  const [chatId, setChatId] = useState<string>("");
   const userAuth = useAuth();
   const navigate = useNavigate();
 
@@ -129,25 +132,34 @@ function Chat() {
     userAuth.setLoading(true);
 
     (async () => {
-      const q = query(collection(db, "users"));
+      const q = query(
+        collection(db, "users"),
+        where("uuid", "!=", userAuth.uid)
+      );
       const querySnapshot = await getDocs(q);
       const userList: any = [];
-      querySnapshot.forEach((doc) => {
-        userList.push(doc.data());
+      querySnapshot.forEach((snap) => {
+        userList.push(snap.data());
       });
       setChatUsers(userList);
       userAuth.setLoading(false);
     })();
   }, []);
 
-  const handleSearch = (): void => {
+  const handleSearch = async () => {
     if (!search.trim()) {
       setContacts([]);
     } else {
-      const filtered = searchContacts.filter((x) =>
-        x.fullName.toLowerCase().includes(search.toLowerCase())
+      const q = query(
+        collection(db, "users"),
+        where("uuid", "!=", userAuth.uid)
       );
-      setContacts(filtered);
+      const querySnapshot = await getDocs(q);
+      const userList: any = [];
+      querySnapshot.forEach((snap) => {
+        userList.push(snap.data());
+      });
+      setContacts(userList);
     }
   };
 
@@ -156,8 +168,15 @@ function Chat() {
     navigate("/signin");
   };
 
-  const activeChatCB = (active: DocumentData) => {
-    setActiveUser(active);
+  const activeChatCB = async (userActive: DocumentData) => {
+    const id =
+      userAuth.uid > userActive.uuid
+        ? userAuth.uid + userActive.uuid
+        : userActive.uuid + userAuth.uid;
+    await setDoc(doc(db, "messages", id), {});
+
+    setChatId(id);
+    setActiveUser(userActive);
   };
 
   return userAuth.loading ? (
@@ -213,7 +232,7 @@ function Chat() {
               />
             </div>
           </div>
-          <CurrentChat messages={userMessages} />
+          {activeUser && <CurrentChat user={activeUser} chatId={chatId} />}
         </div>
       </div>
     </Container>

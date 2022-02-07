@@ -5,13 +5,7 @@ import {
   sendPasswordResetEmail,
   confirmPasswordReset,
 } from "firebase/auth";
-import {
-  addDoc,
-  collection,
-  doc,
-  DocumentData,
-  setDoc,
-} from "firebase/firestore";
+import { addDoc, collection, doc, setDoc } from "firebase/firestore";
 import React, { createContext, useEffect, useMemo, useState } from "react";
 import { createUser, loginRequest, logoutRequest } from "../../services/auth";
 import { auth, db } from "../../services/firebase";
@@ -39,20 +33,23 @@ export function AuthProvider({ children }: IAuthProvider) {
   }, [user, auth]);
 
   async function signUpUser(username: string, email: string, password: string) {
-    const response = await createUser(email, password);
-    await updateProfile(auth.currentUser as User, {
-      displayName: username,
-    });
-    if (response) {
-      await addDoc(collection(db, "users"), {
-        username,
-        avatar: "",
-        email: response.email,
-        online: false,
-        uuid: response.uid,
+    createUser(email, password)
+      .then(async (response) => {
+        await updateProfile(auth.currentUser as User, {
+          displayName: username,
+        });
+        await setDoc(doc(db, "users", response.user.uid), {
+          username,
+          avatar: "",
+          email: response.user.email,
+          online: false,
+          uuid: response.user.uid,
+        });
+        setUser(response);
+      })
+      .catch((error) => {
+        alert(error.message);
       });
-      setUser(response);
-    }
   }
 
   async function authenticate(email: string, password: string) {

@@ -14,13 +14,8 @@ export async function loginRequest(email: string, password: string) {
   }
 }
 
-export async function createUser(email: string, password: string) {
-  try {
-    const request = await createUserWithEmailAndPassword(auth, email, password);
-    return request.user;
-  } catch (error) {
-    return null;
-  }
+export function createUser(email: string, password: string) {
+  return createUserWithEmailAndPassword(auth, email, password);
 }
 
 export async function logoutRequest() {

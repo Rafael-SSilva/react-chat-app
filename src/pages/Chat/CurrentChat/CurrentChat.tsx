@@ -1,4 +1,17 @@
+import { onAuthStateChanged } from "firebase/auth";
+import {
+  DocumentData,
+  doc,
+  onSnapshot,
+  query,
+  collection,
+  orderBy,
+  addDoc,
+  serverTimestamp,
+} from "firebase/firestore";
 import React, { createRef, KeyboardEvent, useEffect, useState } from "react";
+import useAuth from "../../../context/AuthProvider/useAuth";
+import { auth, db } from "../../../services/firebase";
 import Message from "../Message/Message";
 import TextBox from "../TextBox/TextBox";
 import UserChating from "../UserChating/UserChating";
@@ -8,21 +21,39 @@ type MessageProp = {
   message: string;
   sending: boolean;
   id: string;
+  from: string;
+  to: string;
 };
 
-type MessagesProps = {
-  messages: MessageProp[];
+type ChatProps = {
+  user: DocumentData;
+  chatId: string;
 };
 // Receber user ao inves de mensagenss
-function CurrentChat({ messages }: MessagesProps) {
+function CurrentChat({ user, chatId }: ChatProps) {
   const lastMessageRef = createRef<HTMLDivElement>();
   const [typeText, setTypedText] = useState("");
-  const [allMessages, setAllMessages] = useState<MessageProp[]>([]);
+  const [allMessages, setAllMessages] = useState<DocumentData[]>([]);
+  const userAuth = useAuth();
 
   useEffect(() => {
-    if (!allMessages.length) {
-      setAllMessages(messages);
+    if (user || userAuth) {
+      const msgsRef = collection(db, "messages", chatId, "chat");
+      const q = query(msgsRef, orderBy("timestamp", "asc"));
+
+      const unsub = onSnapshot(q, (snapshot) => {
+        const msgs: DocumentData[] = [];
+        snapshot.forEach((msgDoc) => {
+          msgs.push(msgDoc.data());
+        });
+        if (msgs.length) {
+          setAllMessages(msgs);
+        }
+      });
     }
+  }, []);
+
+  useEffect(() => {
     if (lastMessageRef.current) {
       lastMessageRef.current.scrollIntoView({
         behavior: "smooth",
@@ -30,15 +61,20 @@ function CurrentChat({ messages }: MessagesProps) {
     }
   }, [allMessages]);
 
-  const handleSendMessage = (event: KeyboardEvent): void => {
+  const handleSendMessage = async (event: KeyboardEvent) => {
     if (event?.key === "Enter" && !event?.shiftKey && typeText.trim()) {
-      const messageNew: MessageProp = {
+      const messageNew = {
         message: typeText,
+        from: userAuth.uid,
+        to: user.uuid,
         sending: true,
-        id: `${typeText.substring(0, 2)}x9-2x`,
+        timestamp: serverTimestamp(),
       };
       setTypedText("");
-      setAllMessages((prev) => [...prev, messageNew]);
+      const messageRef = await addDoc(
+        collection(db, "messages", chatId, "chat"),
+        messageNew
+      );
     }
   };
 
@@ -51,14 +87,14 @@ function CurrentChat({ messages }: MessagesProps) {
   return (
     <Container className="body">
       <div className="header">
-        <UserChating />
+        <UserChating username={user.username} />
       </div>
       <div className="content">
         <div className="content-messages">
           {allMessages &&
-            allMessages.map((msg: MessageProp) => (
+            allMessages.map((msg: DocumentData) => (
               <Message
-                sending={msg.sending}
+                sending={msg.from === userAuth.uid}
                 message={msg.message}
                 key={msg.id}
               />

@@ -7,6 +7,8 @@ export interface IContext extends User {
   logout: () => void;
   signUpUser: (username: string, email: string, pass: string) => Promise<void>;
   loading: boolean;
+  getError: any;
+  uuid: string;
   setLoading: Dispatch<SetStateAction<boolean>>;
   resetPassword: (email: string) => Promise<void>;
   confirmPassReset: (code: string, newPassword: string) => Promise<void>;

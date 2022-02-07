@@ -1,6 +1,6 @@
 import { Avatar } from "@mui/material";
 import { DocumentData } from "firebase/firestore";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Container from "./styles";
 
 type UserProp = {
@@ -18,6 +18,8 @@ function Users({ users, handleActiveChat }: UsersProps) {
   const [activeUser, setActiveUser] = useState<DocumentData>(
     {} as DocumentData
   );
+
+  useEffect(() => {}, []);
 
   const setActiveChat = (user: DocumentData) => {
     handleActiveChat(user);
