@@ -8,6 +8,15 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
 
+  & .empty-chat {
+    border-radius: 8px;
+    margin: 14px 0 0 14px;
+    width: calc(100% - 30%);
+    height: calc(98% - 14px);
+    background-color: var(--background);
+    margin-bottom: 100px;
+  }
+
   & .chat {
     width: 100%;
     max-width: 60%;

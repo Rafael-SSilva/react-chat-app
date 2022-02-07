@@ -1,4 +1,4 @@
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, Unsubscribe } from "firebase/auth";
 import {
   DocumentData,
   doc,
@@ -37,21 +37,21 @@ function CurrentChat({ user, chatId }: ChatProps) {
   const userAuth = useAuth();
 
   useEffect(() => {
-    if (user || userAuth) {
-      const msgsRef = collection(db, "messages", chatId, "chat");
-      const q = query(msgsRef, orderBy("timestamp", "asc"));
+    setAllMessages([]);
+    const msgsRef = collection(db, "messages", chatId, "chat");
+    const q = query(msgsRef, orderBy("timestamp", "asc"));
 
-      const unsub = onSnapshot(q, (snapshot) => {
-        const msgs: DocumentData[] = [];
-        snapshot.forEach((msgDoc) => {
-          msgs.push(msgDoc.data());
-        });
-        if (msgs.length) {
-          setAllMessages(msgs);
-        }
+    const unsub = onSnapshot(q, (snapshot) => {
+      const msgs: DocumentData[] = [];
+      snapshot.forEach((msgDoc) => {
+        msgs.push(msgDoc.data());
       });
-    }
-  }, []);
+      if (msgs.length) {
+        setAllMessages(msgs);
+      }
+    });
+    return unsub;
+  }, [user]);
 
   useEffect(() => {
     if (lastMessageRef.current) {
@@ -86,28 +86,32 @@ function CurrentChat({ user, chatId }: ChatProps) {
 
   return (
     <Container className="body">
-      <div className="header">
-        <UserChating username={user.username} />
-      </div>
-      <div className="content">
-        <div className="content-messages">
-          {allMessages &&
-            allMessages.map((msg: DocumentData) => (
-              <Message
-                sending={msg.from === userAuth.uid}
-                message={msg.message}
-                key={msg.id}
-              />
-            ))}
-          <div ref={lastMessageRef} />
-        </div>
-      </div>
-      <TextBox
-        HandleKeyPress={HandleKeyPress}
-        handleSendMessage={handleSendMessage}
-        typeText={typeText}
-        changeText={(e) => setTypedText(e.target.value)}
-      />
+      {user && chatId && (
+        <>
+          <div className="header">
+            <UserChating username={user.username} />
+          </div>
+          <div className="content">
+            <div className="content-messages">
+              {allMessages &&
+                allMessages.map((msg: DocumentData) => (
+                  <Message
+                    sending={msg.from === userAuth.uid}
+                    message={msg.message}
+                    key={msg.id}
+                  />
+                ))}
+              <div ref={lastMessageRef} />
+            </div>
+          </div>
+          <TextBox
+            HandleKeyPress={HandleKeyPress}
+            handleSendMessage={handleSendMessage}
+            typeText={typeText}
+            changeText={(e) => setTypedText(e.target.value)}
+          />
+        </>
+      )}
     </Container>
   );
 }

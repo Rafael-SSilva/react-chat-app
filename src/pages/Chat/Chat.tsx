@@ -150,10 +150,7 @@ function Chat() {
     if (!search.trim()) {
       setContacts([]);
     } else {
-      const q = query(
-        collection(db, "users"),
-        where("uuid", "!=", userAuth.uid)
-      );
+      const q = query(collection(db, "users"), where("email", "in", [search]));
       const querySnapshot = await getDocs(q);
       const userList: any = [];
       querySnapshot.forEach((snap) => {
@@ -232,7 +229,11 @@ function Chat() {
               />
             </div>
           </div>
-          {activeUser && <CurrentChat user={activeUser} chatId={chatId} />}
+          {activeUser ? (
+            <CurrentChat user={activeUser} chatId={chatId} />
+          ) : (
+            <div className="empty-chat" />
+          )}
         </div>
       </div>
     </Container>
