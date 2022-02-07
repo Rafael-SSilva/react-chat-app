@@ -33,23 +33,19 @@ export function AuthProvider({ children }: IAuthProvider) {
   }, [user, auth]);
 
   async function signUpUser(username: string, email: string, password: string) {
-    createUser(email, password)
-      .then(async (response) => {
-        await updateProfile(auth.currentUser as User, {
-          displayName: username,
-        });
-        await setDoc(doc(db, "users", response.user.uid), {
-          username,
-          avatar: "",
-          email: response.user.email,
-          online: false,
-          uuid: response.user.uid,
-        });
-        setUser(response);
-      })
-      .catch((error) => {
-        alert(error.message);
+    createUser(email, password).then(async (response) => {
+      await updateProfile(auth.currentUser as User, {
+        displayName: username,
       });
+      await setDoc(doc(db, "users", response.user.uid), {
+        username,
+        avatar: "",
+        email: response.user.email,
+        online: false,
+        uuid: response.user.uid,
+      });
+      setUser(response);
+    });
   }
 
   async function authenticate(email: string, password: string) {

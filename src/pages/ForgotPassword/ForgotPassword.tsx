@@ -24,14 +24,9 @@ function ForgotPassword() {
   const handleReset = (e: FormEvent) => {
     e.preventDefault();
 
-    userAuth
-      .resetPassword(email)
-      .then(() => {
-        navigate("/signin");
-      })
-      .catch((error) => {
-        console.log(error.message);
-      });
+    userAuth.resetPassword(email).then(() => {
+      navigate("/signin");
+    });
   };
 
   return (

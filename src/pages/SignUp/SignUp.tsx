@@ -22,15 +22,10 @@ function SignUp() {
   const handleSignUp = async (e: FormEvent) => {
     e.preventDefault();
 
-    userAuth
-      .signUpUser(username, email, password)
-      .then(() => {
-        userAuth.logout();
-        navigate("/signin");
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    userAuth.signUpUser(username, email, password).then(() => {
+      userAuth.logout();
+      navigate("/signin");
+    });
   };
 
   const handlePressSignIn = (e: KeyboardEvent<HTMLSpanElement>) => {
