@@ -24,14 +24,9 @@ function PasswordReset() {
   const handleReset = (e: FormEvent) => {
     e.preventDefault();
 
-    userAuth
-      .confirmPassReset(code, password)
-      .then(() => {
-        navigate("/signin");
-      })
-      .catch((error) => {
-        console.log(error.message);
-      });
+    userAuth.confirmPassReset(code, password).then(() => {
+      navigate("/signin");
+    });
   };
 
   return (
