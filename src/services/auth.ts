@@ -6,12 +6,7 @@ import {
 import { auth } from "./firebase";
 
 export async function loginRequest(email: string, password: string) {
-  try {
-    const request = await signInWithEmailAndPassword(auth, email, password);
-    return request.user;
-  } catch (error) {
-    return null;
-  }
+  return signInWithEmailAndPassword(auth, email, password);
 }
 
 export function createUser(email: string, password: string) {

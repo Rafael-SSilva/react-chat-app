@@ -5,7 +5,7 @@ import {
   sendPasswordResetEmail,
   confirmPasswordReset,
 } from "firebase/auth";
-import { addDoc, collection, doc, setDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import React, { createContext, useEffect, useMemo, useState } from "react";
 import { createUser, loginRequest, logoutRequest } from "../../services/auth";
 import { auth, db } from "../../services/firebase";
@@ -16,6 +16,7 @@ export const AuthContext = createContext<IContext>({} as IContext);
 export function AuthProvider({ children }: IAuthProvider) {
   const [user, setUser] = useState<User | any>();
   const [loading, setLoading] = useState<boolean>(true);
+  const [authError, setAuthError] = useState({ active: false, message: "" });
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (authUser) => {
@@ -33,26 +34,33 @@ export function AuthProvider({ children }: IAuthProvider) {
   }, [user, auth]);
 
   async function signUpUser(username: string, email: string, password: string) {
-    createUser(email, password).then(async (response) => {
-      await updateProfile(auth.currentUser as User, {
-        displayName: username,
+    createUser(email, password)
+      .then(async (response) => {
+        await updateProfile(auth.currentUser as User, {
+          displayName: username,
+        });
+        await setDoc(doc(db, "users", response.user.uid), {
+          username,
+          avatar: "",
+          email: response.user.email,
+          online: false,
+          uuid: response.user.uid,
+        });
+        setUser(response);
+      })
+      .catch((err) => {
+        setAuthError({ active: true, message: err.code });
       });
-      await setDoc(doc(db, "users", response.user.uid), {
-        username,
-        avatar: "",
-        email: response.user.email,
-        online: false,
-        uuid: response.user.uid,
-      });
-      setUser(response);
-    });
   }
 
   async function authenticate(email: string, password: string) {
-    const response = await loginRequest(email, password);
-    if (response) {
-      setUser(response);
-    }
+    loginRequest(email, password)
+      .then((snap) => {
+        setUser(snap);
+      })
+      .catch((error) => {
+        setAuthError({ active: true, message: error.code });
+      });
   }
 
   async function logout() {
@@ -83,6 +91,8 @@ export function AuthProvider({ children }: IAuthProvider) {
       setLoading,
       resetPassword,
       confirmPassReset,
+      authError,
+      setAuthError,
     }),
     [user]
   );

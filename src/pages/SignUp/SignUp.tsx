@@ -1,5 +1,5 @@
 import React, { FormEvent, KeyboardEvent, useEffect, useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Button from "../../components/Button/Button";
 import Input from "../../components/Input/Input";
 import useAuth from "../../context/AuthProvider/useAuth";
@@ -17,15 +17,11 @@ function SignUp() {
     if (userAuth.email) {
       navigate("/chat");
     }
-  }, []);
+  }, [userAuth]);
 
   const handleSignUp = async (e: FormEvent) => {
     e.preventDefault();
-
-    userAuth.signUpUser(username, email, password).then(() => {
-      userAuth.logout();
-      navigate("/signin");
-    });
+    await userAuth.signUpUser(username, email, password);
   };
 
   const handlePressSignIn = (e: KeyboardEvent<HTMLSpanElement>) => {

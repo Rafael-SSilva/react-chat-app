@@ -1,12 +1,4 @@
-import React, {
-  ButtonHTMLAttributes,
-  FormEvent,
-  KeyboardEvent,
-  KeyboardEventHandler,
-  MouseEventHandler,
-  useEffect,
-  useState,
-} from "react";
+import React, { FormEvent, KeyboardEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/Button/Button";
 import Input from "../../components/Input/Input";
@@ -32,8 +24,8 @@ function Login() {
 
   const handleSignIn = async (e: FormEvent) => {
     e.preventDefault();
+
     await userAuth.authenticate(email, password);
-    navigate("/chat");
   };
 
   return (
