@@ -150,13 +150,18 @@ function Chat() {
     if (!search.trim()) {
       setContacts([]);
     } else {
-      const q = query(collection(db, "users"), where("email", "in", [search]));
+      const q = query(collection(db, "users"));
       const querySnapshot = await getDocs(q);
       const userList: any = [];
       querySnapshot.forEach((snap) => {
         userList.push(snap.data());
       });
-      setContacts(userList);
+      setContacts(
+        userList.filter(
+          (x: DocumentData) =>
+            x.username.includes(search) || x.email.includes(search)
+        )
+      );
     }
   };
 
