@@ -1,17 +1,11 @@
-import React, {
-  ButtonHTMLAttributes,
-  FormEvent,
-  KeyboardEvent,
-  KeyboardEventHandler,
-  MouseEventHandler,
-  useEffect,
-  useState,
-} from "react";
+import React, { FormEvent, KeyboardEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
 import Button from "../../components/Button/Button";
 import Input from "../../components/Input/Input";
 import useAuth from "../../context/AuthProvider/useAuth";
 import Container from "./styles";
+import "react-toastify/dist/ReactToastify.css";
 
 function Login() {
   const navigate = useNavigate();
@@ -19,7 +13,7 @@ function Login() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
-  useEffect(() => {}, []);
+  useEffect(() => {}, [userAuth]);
 
   const handlePressSignUp = (e: KeyboardEvent<HTMLSpanElement>) => {
     if (e.key === "Enter" || e.code === "Space") {
@@ -32,12 +26,35 @@ function Login() {
 
   const handleSignIn = async (e: FormEvent) => {
     e.preventDefault();
-    await userAuth.authenticate(email, password);
-    navigate("/chat");
+
+    try {
+      await userAuth.authenticate(email, password);
+      navigate("/chat");
+    } catch (error: any) {
+      toast.error(error.code, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
   };
 
   return (
     <Container>
+      <ToastContainer
+        position="top-right"
+        autoClose={false}
+        newestOnTop={false}
+        closeOnClick
+        onClick={() => userAuth.setAuthError({ active: false, message: "" })}
+        rtl={false}
+        pauseOnFocusLoss={false}
+        draggable={false}
+      />
       <div className="login">
         <form>
           <Input

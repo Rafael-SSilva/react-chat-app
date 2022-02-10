@@ -4,8 +4,11 @@ import {
   updateProfile,
   sendPasswordResetEmail,
   confirmPasswordReset,
+  AuthError,
+  AuthErrorMap,
+  signInWithEmailAndPassword,
 } from "firebase/auth";
-import { addDoc, collection, doc, setDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import React, { createContext, useEffect, useMemo, useState } from "react";
 import { createUser, loginRequest, logoutRequest } from "../../services/auth";
 import { auth, db } from "../../services/firebase";
@@ -16,6 +19,7 @@ export const AuthContext = createContext<IContext>({} as IContext);
 export function AuthProvider({ children }: IAuthProvider) {
   const [user, setUser] = useState<User | any>();
   const [loading, setLoading] = useState<boolean>(true);
+  const [authError, setAuthError] = useState({ active: false, message: "" });
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (authUser) => {
@@ -33,7 +37,8 @@ export function AuthProvider({ children }: IAuthProvider) {
   }, [user, auth]);
 
   async function signUpUser(username: string, email: string, password: string) {
-    createUser(email, password).then(async (response) => {
+    try {
+      const response = await createUser(email, password);
       await updateProfile(auth.currentUser as User, {
         displayName: username,
       });
@@ -45,14 +50,34 @@ export function AuthProvider({ children }: IAuthProvider) {
         uuid: response.user.uid,
       });
       setUser(response);
-    });
+      return { user: response };
+    } catch (error) {
+      return { error };
+    }
+
+    // createUser(email, password)
+    //   .then(async (response) => {
+    //     await updateProfile(auth.currentUser as User, {
+    //       displayName: username,
+    //     });
+    //     await setDoc(doc(db, "users", response.user.uid), {
+    //       username,
+    //       avatar: "",
+    //       email: response.user.email,
+    //       online: false,
+    //       uuid: response.user.uid,
+    //     });
+    //     setUser(response);
+    //     Promise.resolve(response);
+    //   })
+    //   .catch((err) => {
+    //     Promise.resolve(err);
+    //     setAuthError({ active: true, message: err.code });
+    //   });
   }
 
   async function authenticate(email: string, password: string) {
-    const response = await loginRequest(email, password);
-    if (response) {
-      setUser(response);
-    }
+    return signInWithEmailAndPassword(auth, email, password);
   }
 
   async function logout() {
@@ -83,6 +108,8 @@ export function AuthProvider({ children }: IAuthProvider) {
       setLoading,
       resetPassword,
       confirmPassReset,
+      authError,
+      setAuthError,
     }),
     [user]
   );
