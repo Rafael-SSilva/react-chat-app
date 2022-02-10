@@ -4,6 +4,9 @@ import {
   updateProfile,
   sendPasswordResetEmail,
   confirmPasswordReset,
+  AuthError,
+  AuthErrorMap,
+  signInWithEmailAndPassword,
 } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import React, { createContext, useEffect, useMemo, useState } from "react";
@@ -34,33 +37,47 @@ export function AuthProvider({ children }: IAuthProvider) {
   }, [user, auth]);
 
   async function signUpUser(username: string, email: string, password: string) {
-    createUser(email, password)
-      .then(async (response) => {
-        await updateProfile(auth.currentUser as User, {
-          displayName: username,
-        });
-        await setDoc(doc(db, "users", response.user.uid), {
-          username,
-          avatar: "",
-          email: response.user.email,
-          online: false,
-          uuid: response.user.uid,
-        });
-        setUser(response);
-      })
-      .catch((err) => {
-        setAuthError({ active: true, message: err.code });
+    try {
+      const response = await createUser(email, password);
+      await updateProfile(auth.currentUser as User, {
+        displayName: username,
       });
+      await setDoc(doc(db, "users", response.user.uid), {
+        username,
+        avatar: "",
+        email: response.user.email,
+        online: false,
+        uuid: response.user.uid,
+      });
+      setUser(response);
+      return { user: response };
+    } catch (error) {
+      return { error };
+    }
+
+    // createUser(email, password)
+    //   .then(async (response) => {
+    //     await updateProfile(auth.currentUser as User, {
+    //       displayName: username,
+    //     });
+    //     await setDoc(doc(db, "users", response.user.uid), {
+    //       username,
+    //       avatar: "",
+    //       email: response.user.email,
+    //       online: false,
+    //       uuid: response.user.uid,
+    //     });
+    //     setUser(response);
+    //     Promise.resolve(response);
+    //   })
+    //   .catch((err) => {
+    //     Promise.resolve(err);
+    //     setAuthError({ active: true, message: err.code });
+    //   });
   }
 
   async function authenticate(email: string, password: string) {
-    loginRequest(email, password)
-      .then((snap) => {
-        setUser(snap);
-      })
-      .catch((error) => {
-        setAuthError({ active: true, message: error.code });
-      });
+    return signInWithEmailAndPassword(auth, email, password);
   }
 
   async function logout() {

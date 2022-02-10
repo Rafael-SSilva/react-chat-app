@@ -1,5 +1,6 @@
 import React, { FormEvent, KeyboardEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
 import Button from "../../components/Button/Button";
 import Input from "../../components/Input/Input";
 import useAuth from "../../context/AuthProvider/useAuth";
@@ -13,15 +14,37 @@ function SignUp() {
   const [password2, setPassword2] = useState<string>("");
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (userAuth.email) {
-      navigate("/chat");
-    }
-  }, [userAuth]);
-
   const handleSignUp = async (e: FormEvent) => {
     e.preventDefault();
-    await userAuth.signUpUser(username, email, password);
+
+    if (password.trim() !== password2.trim()) {
+      toast.error("Passwords does not match!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      return;
+    }
+
+    const res = await userAuth.signUpUser(username, email, password);
+    if (res.error) {
+      toast.error(res.error.code, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+    if (res.user) {
+      navigate("/signin");
+    }
   };
 
   const handlePressSignIn = (e: KeyboardEvent<HTMLSpanElement>) => {
@@ -35,6 +58,16 @@ function SignUp() {
 
   return (
     <Container>
+      <ToastContainer
+        position="top-right"
+        autoClose={false}
+        newestOnTop={false}
+        closeOnClick
+        onClick={() => userAuth.setAuthError({ active: false, message: "" })}
+        rtl={false}
+        pauseOnFocusLoss={false}
+        draggable={false}
+      />
       <div className="signup">
         <form onSubmit={handleSignUp}>
           <Input

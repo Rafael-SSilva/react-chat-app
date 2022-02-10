@@ -3,13 +3,13 @@ import { DocumentData } from "firebase/firestore";
 import React, { Dispatch, SetStateAction } from "react";
 
 export interface IContext extends User {
-  authenticate: (email: string, pass: string) => Promise<DocumentData | null>;
+  authenticate: (email: string, pass: string) => Promise<DocumentData>;
   logout: () => void;
   signUpUser: (
     username: string,
     email: string,
     pass: string
-  ) => Promise<DocumentData | null>;
+  ) => Promise<DocumentData | any>;
   loading: boolean;
   getError: any;
   uuid: string;
