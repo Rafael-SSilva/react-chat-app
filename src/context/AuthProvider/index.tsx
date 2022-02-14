@@ -4,11 +4,9 @@ import {
   updateProfile,
   sendPasswordResetEmail,
   confirmPasswordReset,
-  AuthError,
-  AuthErrorMap,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, DocumentData, setDoc, updateDoc } from "firebase/firestore";
 import React, { createContext, useEffect, useMemo, useState } from "react";
 import { createUser, loginRequest, logoutRequest } from "../../services/auth";
 import { auth, db } from "../../services/firebase";
@@ -22,10 +20,15 @@ export function AuthProvider({ children }: IAuthProvider) {
   const [authError, setAuthError] = useState({ active: false, message: "" });
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (authUser) => {
+    const unsub = onAuthStateChanged(auth, async (authUser) => {
       setLoading(false);
       if (authUser) {
         setUser(authUser);
+        if (authUser.email) {
+          await updateDoc(doc(db, "users", authUser.uid), {
+            online: true,
+          });
+        }
       } else {
         setUser(null);
       }
@@ -54,34 +57,22 @@ export function AuthProvider({ children }: IAuthProvider) {
     } catch (error) {
       return { error };
     }
-
-    // createUser(email, password)
-    //   .then(async (response) => {
-    //     await updateProfile(auth.currentUser as User, {
-    //       displayName: username,
-    //     });
-    //     await setDoc(doc(db, "users", response.user.uid), {
-    //       username,
-    //       avatar: "",
-    //       email: response.user.email,
-    //       online: false,
-    //       uuid: response.user.uid,
-    //     });
-    //     setUser(response);
-    //     Promise.resolve(response);
-    //   })
-    //   .catch((err) => {
-    //     Promise.resolve(err);
-    //     setAuthError({ active: true, message: err.code });
-    //   });
   }
 
   async function authenticate(email: string, password: string) {
     return signInWithEmailAndPassword(auth, email, password);
   }
 
+  async function setOnline(isOnline: boolean) {
+    await updateDoc(doc(db, "users", user.uid), {
+      online: isOnline,
+    });
+  }
+
   async function logout() {
     logoutRequest().then(() => {
+      setOnline(false);
+      setUser((prev: DocumentData) => ({ ...prev, online: false }));
       setUser(null);
     });
   }

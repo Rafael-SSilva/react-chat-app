@@ -1,6 +1,14 @@
 import { Avatar } from "@mui/material";
-import { DocumentData } from "firebase/firestore";
+import {
+  collection,
+  DocumentData,
+  onSnapshot,
+  orderBy,
+  query,
+  where,
+} from "firebase/firestore";
 import React, { useEffect, useState } from "react";
+import { db } from "../../../services/firebase";
 import Container from "./styles";
 
 type UserProp = {
@@ -10,28 +18,47 @@ type UserProp = {
 };
 
 type UsersProps = {
-  users: DocumentData[];
+  users: string[];
   handleActiveChat: (active: DocumentData) => void;
+  activeUser: DocumentData | any;
+  tab: string;
 };
 
-function Users({ users, handleActiveChat }: UsersProps) {
-  const [activeUser, setActiveUser] = useState<DocumentData>(
-    {} as DocumentData
-  );
+function Users({ users, handleActiveChat, activeUser, tab }: UsersProps) {
+  const [contacts, setContacts] = useState<DocumentData>([] as DocumentData[]);
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    setContacts([]);
+    if (users.length) {
+      const msgsRef = collection(db, "users");
+      const q = query(msgsRef, where("uuid", "in", users));
+
+      const unsub = onSnapshot(q, (snapshot) => {
+        const snapUsers: DocumentData[] = [];
+        snapshot.forEach((usrSnap) => {
+          snapUsers.push(usrSnap.data());
+        });
+        if (snapUsers.length) {
+          setContacts(snapUsers);
+        }
+      });
+      return unsub;
+    }
+    return () => {};
+  }, [users]);
 
   const setActiveChat = (user: DocumentData) => {
     handleActiveChat(user);
-    setActiveUser(user);
   };
 
   return (
     <Container>
-      {users &&
-        users.map((user, index) => (
+      {contacts &&
+        contacts.map((user: DocumentData) => (
           <div
-            className={user.uuid === activeUser.uuid ? "user active" : "user"}
+            className={`${
+              user.uuid === activeUser?.uuid ? "user active" : "user"
+            } ${user?.online ? "online" : ""}`}
             key={user.uuid}
             onClick={() => setActiveChat(user)}
             onKeyPress={() => setActiveChat(user)}
