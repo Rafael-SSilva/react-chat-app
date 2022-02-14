@@ -1,12 +1,12 @@
 import { Avatar } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { onAuthStateChanged } from "firebase/auth";
 import {
   collection,
   doc,
   DocumentData,
   getDocs,
+  onSnapshot,
   query,
   setDoc,
   where,
@@ -16,7 +16,7 @@ import Container from "./styles";
 import Users from "./Users/Users";
 import SearchInput from "./SearchInput/SearchInput";
 import useAuth from "../../context/AuthProvider/useAuth";
-import { auth, db } from "../../services/firebase";
+import { db } from "../../services/firebase";
 import Spinner from "../../components/Spinner/Spinner";
 
 const searchContacts = [
@@ -118,7 +118,8 @@ const userMessages = [
 
 function Chat() {
   const [activeTab, setActiveTab] = useState("chat");
-  const [contacts, setContacts] = useState<DocumentData[]>([]);
+  const [contacts, setContacts] = useState<string[]>([]);
+  const [usersSearch, setUsersSearch] = useState<string[]>([]);
   const [search, setSearch] = useState<string>("");
   const [chatUsers, setChatUsers] = useState<DocumentData[]>([]);
   const [activeUser, setActiveUser] = useState<DocumentData | null>(null);
@@ -127,11 +128,40 @@ function Chat() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    setActiveTab("chat");
-    setContacts([]);
+    setActiveUser(null);
     userAuth.setLoading(true);
 
+    let unsub: any = null;
+
     (async () => {
+      const q = query(collection(db, "users", userAuth.uid, "contacts"));
+
+      unsub = onSnapshot(q, (snapshot) => {
+        const userList: string[] = [];
+        snapshot.forEach((usr) => {
+          userList.push(usr.id);
+        });
+        if (userList.length) {
+          setContacts(userList);
+        }
+        userAuth.setLoading(false);
+      });
+    })();
+
+    return () => {
+      unsub();
+    };
+  }, []);
+
+  useEffect(() => {
+    setUsersSearch([]);
+    setSearch("");
+  }, [activeTab]);
+
+  const handleSearch = async () => {
+    if (!search.trim()) {
+      setUsersSearch([]);
+    } else {
       const q = query(
         collection(db, "users"),
         where("uuid", "!=", userAuth.uid)
@@ -141,26 +171,13 @@ function Chat() {
       querySnapshot.forEach((snap) => {
         userList.push(snap.data());
       });
-      setChatUsers(userList);
-      userAuth.setLoading(false);
-    })();
-  }, []);
-
-  const handleSearch = async () => {
-    if (!search.trim()) {
-      setContacts([]);
-    } else {
-      const q = query(collection(db, "users"));
-      const querySnapshot = await getDocs(q);
-      const userList: any = [];
-      querySnapshot.forEach((snap) => {
-        userList.push(snap.data());
-      });
-      setContacts(
-        userList.filter(
-          (x: DocumentData) =>
-            x.username.includes(search) || x.email.includes(search)
-        )
+      setUsersSearch(
+        userList.map((x: DocumentData) => {
+          if (x.username.includes(search) || x.email.includes(search)) {
+            return x.uuid;
+          }
+          return null;
+        })
       );
     }
   };
@@ -230,7 +247,9 @@ function Chat() {
               )}
               <Users
                 handleActiveChat={activeChatCB}
-                users={activeTab === "chat" ? chatUsers : contacts}
+                users={activeTab === "chat" ? contacts : usersSearch}
+                activeUser={activeUser}
+                tab={activeTab}
               />
             </div>
           </div>

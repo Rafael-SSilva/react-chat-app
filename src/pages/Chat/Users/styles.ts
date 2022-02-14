@@ -20,6 +20,22 @@ const Container = styled.div`
       box-shadow: 0px 1px 2px 1px rgba(59, 98, 128, 0.31);
     }
 
+    &.online {
+      position: relative;
+
+      &::after {
+        content: "";
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--secondary);
+        position: absolute;
+        top: 50%;
+        transform: translatey(-50%);
+        right: 10px;
+      }
+    }
+
     &:hover {
       background-color: #0a2940;
       cursor: pointer;

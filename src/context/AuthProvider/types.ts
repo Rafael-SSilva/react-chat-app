@@ -18,6 +18,7 @@ export interface IContext extends User {
   confirmPassReset: (code: string, newPassword: string) => Promise<void>;
   authError: { message: string; active: boolean };
   setAuthError: Dispatch<SetStateAction<{ message: string; active: boolean }>>;
+  online: boolean;
 }
 
 export interface IAuthProvider {

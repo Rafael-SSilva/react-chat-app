@@ -8,6 +8,8 @@ import {
   orderBy,
   addDoc,
   serverTimestamp,
+  limit,
+  updateDoc,
 } from "firebase/firestore";
 import React, { createRef, KeyboardEvent, useEffect, useState } from "react";
 import useAuth from "../../../context/AuthProvider/useAuth";
@@ -29,7 +31,6 @@ type ChatProps = {
   user: DocumentData;
   chatId: string;
 };
-// Receber user ao inves de mensagenss
 function CurrentChat({ user, chatId }: ChatProps) {
   const lastMessageRef = createRef<HTMLDivElement>();
   const [typeText, setTypedText] = useState("");
@@ -71,10 +72,10 @@ function CurrentChat({ user, chatId }: ChatProps) {
         timestamp: serverTimestamp(),
       };
       setTypedText("");
-      const messageRef = await addDoc(
-        collection(db, "messages", chatId, "chat"),
-        messageNew
-      );
+      await addDoc(collection(db, "messages", chatId, "chat"), messageNew);
+      await updateDoc(doc(db, "messages", chatId), {
+        unread: 1,
+      });
     }
   };
 
