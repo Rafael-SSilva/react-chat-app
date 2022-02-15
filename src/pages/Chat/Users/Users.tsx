@@ -21,10 +21,9 @@ type UsersProps = {
   users: string[];
   handleActiveChat: (active: DocumentData) => void;
   activeUser: DocumentData | any;
-  tab: string;
 };
 
-function Users({ users, handleActiveChat, activeUser, tab }: UsersProps) {
+function Users({ users, handleActiveChat, activeUser }: UsersProps) {
   const [contacts, setContacts] = useState<DocumentData>([] as DocumentData[]);
 
   useEffect(() => {
