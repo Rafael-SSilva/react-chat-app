@@ -32,10 +32,15 @@ type ChatProps = {
   user: DocumentData;
   chatId: string;
 };
+
+interface messageProp extends DocumentData {
+  id: string;
+}
+
 function CurrentChat({ user, chatId }: ChatProps) {
   const lastMessageRef = createRef<HTMLDivElement>();
   const [typeText, setTypedText] = useState("");
-  const [allMessages, setAllMessages] = useState<DocumentData[]>([]);
+  const [allMessages, setAllMessages] = useState<messageProp[]>([]);
   const userAuth = useAuth();
 
   useEffect(() => {
@@ -44,9 +49,9 @@ function CurrentChat({ user, chatId }: ChatProps) {
     const q = query(msgsRef, orderBy("timestamp", "asc"));
 
     const unsub = onSnapshot(q, (snapshot) => {
-      const msgs: DocumentData[] = [];
+      const msgs: messageProp[] = [];
       snapshot.forEach((msgDoc) => {
-        msgs.push(msgDoc.data());
+        msgs.push({ ...msgDoc.data(), id: msgDoc.id });
       });
       if (msgs.length) {
         setAllMessages(msgs);
@@ -57,9 +62,7 @@ function CurrentChat({ user, chatId }: ChatProps) {
 
   useEffect(() => {
     if (lastMessageRef.current) {
-      lastMessageRef.current.scrollIntoView({
-        behavior: "smooth",
-      });
+      lastMessageRef.current.scrollIntoView();
     }
   }, [allMessages]);
 
