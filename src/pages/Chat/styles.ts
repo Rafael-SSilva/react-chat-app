@@ -7,6 +7,7 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  min-width: 600px;
 
   & .empty-chat {
     border-radius: 8px;
@@ -19,8 +20,9 @@ const Container = styled.div`
 
   & .chat {
     width: 100%;
-    max-width: 60%;
+    max-width: 70%;
     height: 80vh;
+    min-width: 600px;
 
     &__header {
       background-color: var(--background);
@@ -85,14 +87,14 @@ const Container = styled.div`
 
           & .chat__sidebar--header-tabs {
             display: flex;
+            width: 100%;
             height: 100%;
-            justify-content: space-between;
             align-items: center;
 
             & div {
               color: var(--primary);
               font-weight: 400;
-              width: calc(50% - 0.8rem);
+              width: 100%;
               height: 100%;
               display: flex;
               align-items: center;
@@ -186,6 +188,16 @@ const Container = styled.div`
           width: 95%;
         }
       }
+    }
+  }
+
+  @media only screen and (max-width: 1024px) {
+    & .chat {
+      max-width: 90%;
+    }
+
+    & .divider .chat__sidebar {
+      min-width: 200px;
     }
   }
 `;

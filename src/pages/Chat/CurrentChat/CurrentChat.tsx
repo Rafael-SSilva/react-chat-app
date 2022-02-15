@@ -87,7 +87,7 @@ function CurrentChat({ user, chatId }: ChatProps) {
   };
 
   return (
-    <Container className="body">
+    <Container>
       {user && chatId && (
         <>
           <div className="header">
