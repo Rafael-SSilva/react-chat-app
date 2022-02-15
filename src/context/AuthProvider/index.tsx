@@ -42,17 +42,21 @@ export function AuthProvider({ children }: IAuthProvider) {
   async function signUpUser(username: string, email: string, password: string) {
     try {
       const response = await createUser(email, password);
-      await updateProfile(auth.currentUser as User, {
+
+      if (response) {
+        await setDoc(doc(db, "users", response.user.uid), {
+          username,
+          avatar: "",
+          email: response.user.email,
+          online: false,
+          uuid: response.user.uid,
+        });
+
+        setUser(response.user);
+      }
+      await updateProfile(response.user, {
         displayName: username,
       });
-      await setDoc(doc(db, "users", response.user.uid), {
-        username,
-        avatar: "",
-        email: response.user.email,
-        online: false,
-        uuid: response.user.uid,
-      });
-      setUser(response);
       return { user: response };
     } catch (error) {
       return { error };

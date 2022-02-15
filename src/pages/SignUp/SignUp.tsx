@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import Button from "../../components/Button/Button";
 import Input from "../../components/Input/Input";
+import Spinner from "../../components/Spinner/Spinner";
 import useAuth from "../../context/AuthProvider/useAuth";
 import Container from "./styles";
 
@@ -12,6 +13,7 @@ function SignUp() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [password2, setPassword2] = useState<string>("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSignUp = async (e: FormEvent) => {
@@ -30,7 +32,10 @@ function SignUp() {
       return;
     }
 
+    setLoading(true);
     const res = await userAuth.signUpUser(username, email, password);
+    setLoading(false);
+
     if (res.error) {
       toast.error(res.error.code, {
         position: "top-right",
@@ -56,7 +61,9 @@ function SignUp() {
     return false;
   };
 
-  return (
+  return loading ? (
+    <Spinner />
+  ) : (
     <Container>
       <ToastContainer
         position="top-right"

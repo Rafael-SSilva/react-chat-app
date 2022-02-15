@@ -6,12 +6,14 @@ import Input from "../../components/Input/Input";
 import useAuth from "../../context/AuthProvider/useAuth";
 import Container from "./styles";
 import "react-toastify/dist/ReactToastify.css";
+import Spinner from "../../components/Spinner/Spinner";
 
 function Login() {
   const navigate = useNavigate();
   const userAuth = useAuth();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {}, [userAuth]);
 
@@ -28,7 +30,9 @@ function Login() {
     e.preventDefault();
 
     try {
+      setLoading(true);
       await userAuth.authenticate(email, password);
+      setLoading(false);
       navigate("/chat");
     } catch (error: any) {
       toast.error(error.code, {
@@ -43,7 +47,9 @@ function Login() {
     }
   };
 
-  return (
+  return loading ? (
+    <Spinner />
+  ) : (
     <Container>
       <ToastContainer
         position="top-right"
