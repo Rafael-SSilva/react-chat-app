@@ -5,6 +5,7 @@ import {
   collection,
   doc,
   DocumentData,
+  getDoc,
   getDocs,
   onSnapshot,
   query,
@@ -18,88 +19,6 @@ import SearchInput from "./SearchInput/SearchInput";
 import useAuth from "../../context/AuthProvider/useAuth";
 import { db } from "../../services/firebase";
 import Spinner from "../../components/Spinner/Spinner";
-
-const searchContacts = [
-  {
-    username: "Lucas",
-    fullName: "Lucas Ribeiro",
-    avatar: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
-    uuid: "asdsadas",
-    email: "adasdas",
-    online: true,
-  },
-  {
-    username: "Rafael",
-    fullName: "Rafael Santos",
-    avatar: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
-    uuid: "asdsadas",
-    email: "adasdas",
-    online: true,
-  },
-  {
-    username: "Luciano",
-    fullName: "Luciano da Silva",
-    avatar: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
-    uuid: "asdsadas",
-    email: "adasdas",
-    online: true,
-  },
-  {
-    username: "Luan",
-    fullName: "Luan de Souza",
-    avatar: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
-    uuid: "asdsadas",
-    email: "adasdas",
-    online: true,
-  },
-  {
-    username: "Luiz",
-    fullName: "Luiz Gomes",
-    avatar: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
-    uuid: "asdsadas",
-    email: "adasdas",
-    online: true,
-  },
-  {
-    username: "João",
-    fullName: "João da Silva",
-    avatar: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
-    uuid: "asdsadas",
-    email: "adasdas",
-    online: true,
-  },
-  {
-    username: "Pedro",
-    fullName: "Pedro dos Santos",
-    avatar: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
-    uuid: "asdsadas",
-    email: "adasdas",
-    online: true,
-  },
-];
-
-const activeUsers = [
-  {
-    username: "Lucas",
-    fullName: "Lucas Ribeiro",
-    imageUrl: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
-  },
-  {
-    username: "Rafael",
-    fullName: "Rafael Santos",
-    imageUrl: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
-  },
-  {
-    username: "João",
-    fullName: "João da Silva",
-    imageUrl: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
-  },
-  {
-    username: "Pedro",
-    fullName: "Pedro dos Santos",
-    imageUrl: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
-  },
-];
 
 type UserProp = {
   username: string;
@@ -121,9 +40,9 @@ function Chat() {
   const [contacts, setContacts] = useState<string[]>([]);
   const [usersSearch, setUsersSearch] = useState<string[]>([]);
   const [search, setSearch] = useState<string>("");
-  const [chatUsers, setChatUsers] = useState<DocumentData[]>([]);
   const [activeUser, setActiveUser] = useState<DocumentData | null>(null);
   const [chatId, setChatId] = useState<string>("");
+  const [loading, setLoading] = useState(false);
   const userAuth = useAuth();
   const navigate = useNavigate();
 
@@ -188,14 +107,27 @@ function Chat() {
   };
 
   const activeChatCB = async (userActive: DocumentData) => {
+    setLoading(true);
     const id =
       userAuth.uid > userActive.uuid
         ? userAuth.uid + userActive.uuid
         : userActive.uuid + userAuth.uid;
     await setDoc(doc(db, "messages", id), {});
 
+    const docSnap = await getDoc(
+      doc(db, "users", userAuth.uid, "contacts", userActive.uuid)
+    );
+
+    if (!docSnap.exists()) {
+      await setDoc(
+        doc(db, "users", userAuth.uid, "contacts", userActive.uuid),
+        {}
+      );
+    }
+
     setChatId(id);
     setActiveUser(userActive);
+    setLoading(false);
   };
 
   return userAuth.loading ? (
@@ -249,7 +181,6 @@ function Chat() {
                 handleActiveChat={activeChatCB}
                 users={activeTab === "chat" ? contacts : usersSearch}
                 activeUser={activeUser}
-                tab={activeTab}
               />
             </div>
           </div>
